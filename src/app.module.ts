@@ -8,7 +8,7 @@ import { EventsModule } from './events/events.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
+      host: 'db',
       port: 5432,
       username: 'root_daemon',
       password: 'justdoit',
