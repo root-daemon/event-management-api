@@ -20,6 +20,9 @@ show_help() {
   echo "  logs-app  - Show logs for the app container only"
   echo "  logs-db   - Show logs for the database container only"
   echo "  ps        - Show running containers"
+  echo "  push      - Build for x86/AMD64 and push to Docker Hub"
+  echo "  push-x86  - Build for x86/AMD64 and push to Docker Hub (same as push)"
+  echo "  tag       - Tag the image for pushing (usage: ./docker.sh tag [registry/username] [tag])"
   echo "  help      - Show this help message"
 }
 
@@ -54,6 +57,38 @@ rebuild_containers() {
   echo -e "${YELLOW}API is accessible at: http://localhost:3000/api${NC}"
 }
 
+# Function to build and push x86/AMD64 image
+push_x86_image() {
+  REGISTRY=${2:-"rootdaemon"}  # Default registry username
+  TAG=${3:-"latest"}           # Default tag
+  
+  echo -e "${GREEN}Building image for x86/AMD64 platform...${NC}"
+  docker buildx build --platform linux/amd64 -t ${REGISTRY}/event-management-api:${TAG} --push .
+  
+  if [ $? -eq 0 ]; then
+    echo -e "${GREEN}Image pushed successfully!${NC}"
+    echo -e "${YELLOW}Image: ${REGISTRY}/event-management-api:${TAG}${NC}"
+  else
+    echo -e "${YELLOW}Build/push failed. Make sure you're logged in with: docker login${NC}"
+  fi
+}
+
+# Function to tag image
+tag_image() {
+  REGISTRY=${2:-"rootdaemon"}  # Default registry username
+  TAG=${3:-"latest"}           # Default tag
+  
+  echo -e "${GREEN}Tagging image...${NC}"
+  docker tag event-management-api:latest ${REGISTRY}/event-management-api:${TAG}
+  
+  if [ $? -eq 0 ]; then
+    echo -e "${GREEN}Image tagged successfully!${NC}"
+    echo -e "${YELLOW}Tagged as: ${REGISTRY}/event-management-api:${TAG}${NC}"
+  else
+    echo -e "${YELLOW}Tagging failed. Make sure the image exists.${NC}"
+  fi
+}
+
 # Main script logic
 case "$1" in
   up)
@@ -79,6 +114,12 @@ case "$1" in
     ;;
   ps)
     docker-compose ps
+    ;;
+  push|push-x86)
+    push_x86_image "$@"
+    ;;
+  tag)
+    tag_image "$@"
     ;;
   help|*)
     show_help
