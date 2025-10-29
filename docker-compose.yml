@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:13
+    image: docker.io/postgres:13
     environment:
       POSTGRES_USER: root_daemon
       POSTGRES_PASSWORD: justdoit
@@ -16,8 +16,11 @@ services:
       retries: 5
 
   app:
-    image: docker.io/rootdaemon/event-management-api:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     platform: linux/amd64
+    image: event-management-api:latest
     ports:
       - '3000:3000'
     depends_on:
