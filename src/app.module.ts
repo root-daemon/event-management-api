@@ -1,15 +1,14 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { EventsModule } from './events/events.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
-import { getDatabaseConfig } from './config/database.config';
+import { ConfigModule } from './config/config.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(getDatabaseConfig()),
+    ConfigModule,
     EventsModule,
     UsersModule,
     AuthModule,

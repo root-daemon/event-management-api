@@ -1,6 +1,6 @@
 # Event Management API
 
-A RESTful API for managing events, built with NestJS, TypeORM, and PostgreSQL.
+A RESTful API for managing events, built with NestJS and Bun's native SQLite.
 
 ## Features
 
